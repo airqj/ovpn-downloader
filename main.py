@@ -3,7 +3,7 @@
 超简单的文件下载服务 - 基于用户名密码认证
 使用方法：
 1. pip install flask
-2. python3 simple_server.py
+2. python3 main.py
 3. 客户端直接用用户名密码下载文件
 """
 
