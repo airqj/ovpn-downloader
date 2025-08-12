@@ -95,14 +95,11 @@ def download_file():
     if not os.path.exists(file_path):
         print(f"文件不存在，正在生成: {file_path}")
         
-        # 确保目录存在
-        os.makedirs(file_dir, exist_ok=True)
-        
         # 调用生成脚本
         script_path = os.path.join(SCRIPTS_DIR, SCRIPT_FILENAME)
         try:
             result = subprocess.run([
-                'bash', script_path, "genclient", normalized_mac, VPN_SERVER_ADDR], capture_output=True, text=True, timeout=30)
+                'bash', script_path, "genclient", mac_clean, VPN_SERVER_ADDR], capture_output=True, text=True, timeout=30)
             
             if result.returncode != 0:
                 print(f"文件生成失败: {result.stderr}")
