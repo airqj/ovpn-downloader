@@ -15,14 +15,19 @@ from flask import Flask, request, jsonify, send_file
 app = Flask(__name__)
 
 # 配置
-FILES_DIR = "/data/clients/"
+OVPN_DATA = os.getenv('OVPN_DATA')
+FILES_DIR = os.path.join(OVPN_DATA, 'clients')
+DOWNLOAD_USERNAME = os.getenv('DOWNLOAD_USERNAME')
+DOWNLOAD_PASSWORD = os.getenv('DOWNLOAD_PASSWORD')
+VPN_SERVER_ADDR = os.getenv('VPN_SERVER_ADDR')
+
 SCRIPTS_DIR = "/usr/bin/"
+SCRIPT_FILENAME = "docker-entrypoint.sh"
+SCRIPT_PATH = os.path.join(SCRIPTS_DIR, SCRIPT_FILENAME)
 
 # 用户数据 (可以轻松修改添加更多用户)
 USERS = {
-    "admin": "admin123",
-    "user1": "user123",
-    "device": "device888"
+    DOWNLOAD_USERNAME: DOWNLOAD_PASSWORD,
 }
 
 def validate_mac_address(mac):
@@ -79,8 +84,8 @@ def download_file(filename):
         return jsonify({'error': '非法文件名'}), 400
     
     # 构建文件路径
-    mac_clean = normalized_mac.replace(':', '')
-    file_dir = os.path.join(FILES_DIR, username, mac_clean)
+    mac_clean = normalized_mac.replace(':', '-')
+    file_dir = os.path.join(FILES_DIR, mac_clean)
     file_path = os.path.join(file_dir, filename)
     
     print(f"用户 {username} 请求文件: {filename}, MAC: {normalized_mac}")
@@ -93,11 +98,10 @@ def download_file(filename):
         os.makedirs(file_dir, exist_ok=True)
         
         # 调用生成脚本
-        script_path = os.path.join(SCRIPTS_DIR, 'generate_file.sh')
+        script_path = os.path.join(SCRIPTS_DIR, SCRIPT_FILENAME)
         try:
             result = subprocess.run([
-                'bash', script_path, filename, normalized_mac, file_dir, username
-            ], capture_output=True, text=True, timeout=30)
+                'bash', script_path, "genclient", normalized_mac, VPN_SERVER_ADDR], capture_output=True, text=True, timeout=30)
             
             if result.returncode != 0:
                 print(f"文件生成失败: {result.stderr}")
