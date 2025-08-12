@@ -150,7 +150,7 @@ def unauthorized(error):
 
 if __name__ == '__main__':
     # 创建必要的目录
-    os.makedirs(FILES_DIR, exist_ok=True)
+    # os.makedirs(FILES_DIR, exist_ok=True)
     # os.makedirs(SCRIPTS_DIR, exist_ok=True)
     
     print("========================================")
