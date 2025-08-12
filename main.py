@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 # 配置
 OVPN_DATA = os.getenv('OVPN_DATA')
-FILES_DIR = os.path.join(OVPN_DATA, 'clients')
+CLIENTS_DIR = os.path.join(OVPN_DATA, 'clients')
 DOWNLOAD_USERNAME = os.getenv('DOWNLOAD_USERNAME')
 DOWNLOAD_PASSWORD = os.getenv('DOWNLOAD_PASSWORD')
 VPN_SERVER_ADDR = os.getenv('VPN_SERVER_ADDR')
@@ -86,8 +86,7 @@ def download_file():
     # 构建文件路径
     mac_clean = normalized_mac.replace(':', '-')
     filename = f"{mac_clean}.ovpn"
-    file_dir = os.path.join(FILES_DIR, mac_clean)
-    file_path = os.path.join(file_dir, filename)
+    file_path = os.path.join(CLIENTS_DIR, filename)
     
     print(f"用户 {username} 请求文件: {filename}, MAC: {normalized_mac}")
     
