@@ -60,8 +60,8 @@ def check_auth():
     
     return username, None
 
-@app.route('/download/<filename>')
-def download_file(filename):
+@app.route('/download')
+def download_file():
     """下载文件 - 使用HTTP Basic认证"""
     
     # 检查认证
@@ -80,11 +80,12 @@ def download_file(filename):
         return jsonify({'error': mac_error}), 400
     
     # 安全检查文件名
-    if '..' in filename or '/' in filename or '\\' in filename:
-        return jsonify({'error': '非法文件名'}), 400
+    # if '..' in filename or '/' in filename or '\\' in filename:
+    #     return jsonify({'error': '非法文件名'}), 400
     
     # 构建文件路径
     mac_clean = normalized_mac.replace(':', '-')
+    filename = f"{mac_clean}.ovpn"
     file_dir = os.path.join(FILES_DIR, mac_clean)
     file_path = os.path.join(file_dir, filename)
     
